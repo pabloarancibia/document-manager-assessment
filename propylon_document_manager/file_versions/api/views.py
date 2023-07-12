@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
+from ..permissions import OwnFilePermission
 
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin, CreateModelMixin
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
@@ -11,7 +12,7 @@ from .serializers import FileVersionSerializer
 
 class FileVersionViewSet(CreateModelMixin, RetrieveModelMixin, ListModelMixin, GenericViewSet):
     authentication_classes = [BasicAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, OwnFilePermission]
     serializer_class = FileVersionSerializer
     queryset = FileVersion.objects.all()
     lookup_field = "id"
