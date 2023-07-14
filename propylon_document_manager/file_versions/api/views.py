@@ -13,6 +13,7 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser 
 
+from urllib.parse import unquote
 
 
 from file_versions.models import FileVersion
@@ -47,12 +48,14 @@ class FileVersionViewSet(CreateModelMixin, RetrieveModelMixin, ListModelMixin, G
             if not file:
                 raise serializers.ValidationError("Please select a valid file")
 
+
             # file version logic
             version_update = 1
             url_setted = request.data.get('url_setted')
             similar_url = FileVersion.objects.filter(url_setted=url_setted)
             if similar_url:
-                version_update = len(similar_url) + 1             
+                version_update = len(similar_url) + 1 
+                        
 
             serializer.save(
                 version_number=version_update,
@@ -67,21 +70,43 @@ class PathForFiles(View):
         '''hanging paths for files
     '''
         # get path parameter
-        path = kwargs.get('path')
-        full_path = settings.MEDIA_ROOT + '/' + path
-        # full_path = '/media/' + path
-        
-        #print(path)
-        print(full_path)
-        
-        # get version
+        path = kwargs.get('path')  
 
+        # get filename
+        filename = unquote(path.split('/')[-1])
+        
+        # logic to version_number
+        if 'revision' in request.GET:
+            revision = request.GET['revision']
+        else:
+            revision = 1
+        
+        # search fileversion
+        # clean path for url_setted
+        urlsetted = path
+        urlsetted = urlsetted.rsplit('/', 1)[0]  # delete last "/" to final
 
+        # print(path)
+        # print(urlsetted)
+        # print(revision)
+        # print(filename)
+
+        # search file in model
+        fileversion = FileVersion.objects.filter(url_setted=urlsetted, version_number=revision, file_name=filename).first()
+
+        # get file url
+        if fileversion:
+            urlfile = fileversion.url_file
+        else:
+            return HttpResponse("El archivo no se encontró.", status=404)
+        
+        # complete path of file
+        # full_path = settings.MEDIA_ROOT + '/' + urlfile.path
+        full_path = urlfile.path
+        
         # open file
         with open(full_path, 'rb') as file:
             file_content = file.read()
-            
-        print(file)
 
         # get type of file with python magic
         mime_type = magic.from_buffer(file_content, mime=True)
