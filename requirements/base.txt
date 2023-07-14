@@ -19,3 +19,6 @@ djangorestframework==3.14.0  # https://github.com/encode/django-rest-framework
 django-cors-headers==4.0.0  # https://github.com/adamchainz/django-cors-headers
 # DRF-spectacular for api documentation
 drf-spectacular==0.26.2  # https://github.com/tfranzel/drf-spectacular
+
+# Python Magic for files responses
+python-magic==0.4.27 # https://pypi.org/project/python-magic/
