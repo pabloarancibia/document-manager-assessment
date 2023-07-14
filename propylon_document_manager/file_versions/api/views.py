@@ -75,24 +75,20 @@ class PathForFiles(View):
         # get filename
         filename = unquote(path.split('/')[-1])
         
-        # logic to version_number
-        if 'revision' in request.GET:
-            revision = request.GET['revision']
-        else:
-            revision = 1
         
-        # search fileversion
+        # search FileVersion object
         # clean path for url_setted
         urlsetted = path
         urlsetted = urlsetted.rsplit('/', 1)[0]  # delete last "/" to final
 
-        # print(path)
-        # print(urlsetted)
-        # print(revision)
-        # print(filename)
+        # Search file in model
+        # logic to version_number
+        if 'revision' in request.GET:
+            revision = request.GET['revision']
+            fileversion = FileVersion.objects.filter(url_setted=urlsetted, version_number=revision, file_name=filename).first()
+        else:
+            fileversion = FileVersion.objects.filter(url_setted=urlsetted, file_name=filename).last()
 
-        # search file in model
-        fileversion = FileVersion.objects.filter(url_setted=urlsetted, version_number=revision, file_name=filename).first()
 
         # get file url
         if fileversion:
