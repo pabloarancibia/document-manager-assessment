@@ -4,7 +4,7 @@ from django.views import View
 from django.conf import settings
 
 from rest_framework import status, serializers
-from rest_framework.authentication import BasicAuthentication
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from ..permissions import OwnFilePermission
 
@@ -23,7 +23,7 @@ import magic
 
 
 class FileVersionViewSet(CreateModelMixin, RetrieveModelMixin, ListModelMixin, GenericViewSet):
-    authentication_classes = [BasicAuthentication]
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated, OwnFilePermission]
     serializer_class = FileVersionSerializer
     queryset = FileVersion.objects.all()
