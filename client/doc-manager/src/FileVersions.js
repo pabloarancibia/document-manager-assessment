@@ -18,38 +18,101 @@ function FileVersions() {
   const [data, setData] = useState([]);
   console.log(data);
 
-  // useEffect(() => {
-  //   // fetch data
-  //   const dataFetch = async () => {
-  //     const data = await (
-  //       await fetch("http://localhost:8001/api/file_versions")
-  //     ).json();
+  const [filename, setFilename] = useState('')
+  const [files, setFiles] = useState([{}])
+  const [status, setstatus] = useState('')
+  const [url_setted, setUrlsetted] = useState('')
 
-  //     // set state when the data received
-  //     setData(data);
-  //   };
+  // upload file
+  const saveFile = () =>{
+      console.log('Button clicked')
 
-  //   dataFetch();
-  // }, []);
-  useEffect(() => {
-    const dataFetch = async () => {
-      try {
-        const response = await api.get('/file_versions/');
-        setData(response.data);
-      } catch (error) {
-        console.log(error);
+      let formData = new FormData();
+      formData.append("url_file", filename);
+      formData.append("url_setted", url_setted);
+
+
+      let axiosConfig = {
+          headers: {
+              'Content-Type': 'multipart/form-data'
+          }
       }
-    };
-  
+
+      console.log(formData)
+      console.log('FormData values:');
+      formData.forEach((value, key) => {
+        console.log(`${key}: ${value}`);
+      });
+      api.post('/file_versions/', formData, axiosConfig).then(
+          response =>{
+              console.log(response)
+              setstatus('File Uploaded Successfully')
+          }
+      ).catch(error =>{
+          console.log(error)
+      })
+    }
+
+
+  // fetch data
+  const dataFetch = async () => {
+    try {
+      const response = await api.get('/file_versions/');
+      // set state when the data received
+      setData(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
     dataFetch();
   }, []);
   return (
+    
     <div>
+      <h1>Upload Files</h1>
+      <div className="row">
+      <div className="col-md-4">
+        <form>
+          <div className="form-group">
+          <label htmlFor="" className="float-left">
+              URL (example: docs/pdf): 
+            </label>
+            <input
+              type="text"
+              value={url_setted}
+              onChange={(e) => setUrlsetted(e.target.value)}
+              className="form-control"
+            />
+            <br/>
+            <label htmlFor="" className="float-left">
+              Browse A File To Upload
+            </label>
+            
+            <input
+              type="file"
+              onChange={e => setFilename(e.target.files[0])}
+              className="form-control"
+            />
+          </div>
+          <button type="button" onClick={saveFile} className="btn btn-primary float-left mt-2">Submit</button>
+            <br/>
+            <br/>
+            <br/>
+
+            {status ? <h2>{status}</h2>:null}
+
+        </form>
+      </div>
+      </div>
+
       <h1>Found {data.length} File Versions</h1>
       <div>
-        <FileVersionsList file_versions={data} />h
-      </div>
+        <FileVersionsList file_versions={data} />
+        </div>
     </div>
+
   );
 }
 
