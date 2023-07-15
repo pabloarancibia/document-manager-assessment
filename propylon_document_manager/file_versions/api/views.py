@@ -43,6 +43,8 @@ class FileVersionViewSet(CreateModelMixin, RetrieveModelMixin, ListModelMixin, G
         '''
         serializer = self.serializer_class(data = request.data)
         if serializer.is_valid():
+            # user logged
+            user = request.user
             # file name logic, equal to name of file.
             file = request.FILES['url_file']
             if not file:
@@ -59,7 +61,8 @@ class FileVersionViewSet(CreateModelMixin, RetrieveModelMixin, ListModelMixin, G
 
             serializer.save(
                 version_number=version_update,
-                file_name=file)
+                file_name=file,
+                file_user=user)
             
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
