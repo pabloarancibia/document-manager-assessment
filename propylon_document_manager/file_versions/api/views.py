@@ -10,6 +10,7 @@ from ..permissions import OwnFilePermission
 
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin, CreateModelMixin
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser 
 
@@ -67,10 +68,12 @@ class FileVersionViewSet(CreateModelMixin, RetrieveModelMixin, ListModelMixin, G
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class PathForFiles(View):
+class PathForFiles(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, OwnFilePermission]
 
     def get(self, request, *args, **kwargs):
-        '''hanging paths for files
+        '''paths for files logic
     '''
         # get path parameter
         path = kwargs.get('path')  
