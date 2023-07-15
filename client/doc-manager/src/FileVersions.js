@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import api from './interceptor/api';
 
 import "./FileVersions.css";
 
@@ -17,17 +18,29 @@ function FileVersions() {
   const [data, setData] = useState([]);
   console.log(data);
 
+  // useEffect(() => {
+  //   // fetch data
+  //   const dataFetch = async () => {
+  //     const data = await (
+  //       await fetch("http://localhost:8001/api/file_versions")
+  //     ).json();
+
+  //     // set state when the data received
+  //     setData(data);
+  //   };
+
+  //   dataFetch();
+  // }, []);
   useEffect(() => {
-    // fetch data
     const dataFetch = async () => {
-      const data = await (
-        await fetch("http://localhost:8001/api/file_versions")
-      ).json();
-
-      // set state when the data received
-      setData(data);
+      try {
+        const response = await api.get('/file_versions/');
+        setData(response.data);
+      } catch (error) {
+        console.log(error);
+      }
     };
-
+  
     dataFetch();
   }, []);
   return (
