@@ -1,0 +1,436 @@
+{
+	"info": {
+		"_postman_id": "5f104c56-4857-4544-8862-f10856ce279b",
+		"name": "backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13101810"
+	},
+	"item": [
+		{
+			"name": "List My Files",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify the response status code",
+							"pm.test(\"Valid status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Verify if the response contains a valid content type header",
+							"pm.test(\"Valid content type\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\", \"application/json\");",
+							"});",
+							"",
+							"// Verify if the response contains a non-empty body",
+							"pm.test(\"Non-empty response body\", function () {",
+							"    pm.response.to.have.jsonBody();",
+							"});",
+							"",
+							"// Verify successful token-based authentication",
+							"pm.test(\"Successful token-based authentication\", function () {",
+							"    pm.response.json().hasOwnProperty(\"access_token\");  // Verify if the response contains the access token",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/file_versions/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"file_versions",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List My Files noAuth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify failed token-based authentication",
+							"pm.test(\"Failed token-based authentication\", function () {",
+							"    pm.response.to.have.status(401);  // Verify an invalid authentication status code",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/file_versions/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"file_versions",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload File",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify the response status code",
+							"pm.test(\"Valid status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Verify if the response contains a valid content type header",
+							"pm.test(\"Valid content type\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\", \"application/json\");",
+							"});",
+							"",
+							"// Verify if the response contains a non-empty body",
+							"pm.test(\"Non-empty response body\", function () {",
+							"    pm.response.to.have.jsonBody();",
+							"});",
+							"",
+							"// Verify successful token-based authentication",
+							"pm.test(\"Successful token-based authentication\", function () {",
+							"    pm.response.json().hasOwnProperty(\"access_token\");  // Verify if the response contains the access token",
+							"});",
+							"",
+							"",
+							"// Verify the response body contains the expected properties",
+							"pm.test(\"Expected properties in the response body\", function () {",
+							"    pm.response.to.have.jsonBody(\"id\");",
+							"    pm.response.to.have.jsonBody(\"url_setted\");",
+							"    pm.response.to.have.jsonBody(\"file_name\");",
+							"    pm.response.to.have.jsonBody(\"version_number\");",
+							"    pm.response.to.have.jsonBody(\"url_file\");",
+							"    pm.response.to.have.jsonBody(\"file_user\");",
+							"});",
+							"",
+							"// Verify the values of specific properties in the response body",
+							"pm.test(\"Correct values of properties in the response body\", function () {",
+							"    pm.expect(pm.response.json().url_setted).to.eql(\"docs/test\");",
+							"    pm.expect(pm.response.json().file_name).to.eql(\"test.pdf\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "url_file",
+							"type": "file",
+							"src": "/home/ecom/Documents/test.pdf"
+						},
+						{
+							"key": "url_setted",
+							"value": "docs/test",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/api/file_versions/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"file_versions",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload File noAuth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify failed token-based authentication",
+							"pm.test(\"Failed token-based authentication\", function () {",
+							"    pm.response.to.have.status(401);  // Verify an invalid authentication status code",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{base_url}}/api/file_versions/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"file_versions",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload File noParams",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify that the response requests the required parameters",
+							"pm.test(\"Required parameters are requested\", function () {",
+							"    pm.response.to.have.status(400);  // Verify the response has a 400 status code",
+							"    pm.response.to.have.jsonBody();   // Verify that the response has a JSON body",
+							"    pm.response.json().hasOwnProperty(\"url_setted\");  // Verify if \"url_setted\" parameter is requested",
+							"    pm.response.json().hasOwnProperty(\"url_file\");    // Verify if \"url_file\" parameter is requested",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{base_url}}/api/file_versions/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"file_versions",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Download File",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify the response status code",
+							"pm.test(\"Valid status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Verify if the response contains a valid content type header for file-related types",
+							"pm.test(\"Valid file-related content type\", function () {",
+							"    const validContentTypes = [",
+							"        \"application/pdf\",",
+							"        \"application/msword\",",
+							"        \"application/vnd.ms-excel\",",
+							"        \"image/jpeg\",",
+							"        \"image/png\",",
+							"        \"text/plain\"",
+							"    ];",
+							"",
+							"    const responseContentType = pm.response.headers.get(\"Content-Type\");",
+							"    pm.expect(validContentTypes).to.include(responseContentType);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/docs/test/test.pdf",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"docs",
+						"test",
+						"test.pdf"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Download File noAuth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify failed token-based authentication",
+							"pm.test(\"Failed token-based authentication\", function () {",
+							"    pm.response.to.have.status(401);  // Verify an invalid authentication status code",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/docs/test/test.pdf",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"docs",
+						"test",
+						"test.pdf"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Download File noValidPath",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify that the response indicates the file was not found",
+							"pm.test(\"File not found\", function () {",
+							"    pm.response.to.have.status(404);  // Verify the response has a 404 status code",
+							"    pm.response.to.have.body(\"El archivo no se encontró.\");  // Verify the response body contains the expected error message",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/no-valid-path/test.pdf",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"no-valid-path",
+						"test.pdf"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
