@@ -88,6 +88,7 @@ LOCAL_APPS = [
     "propylon_document_manager.users",
     # Your stuff: custom apps go here
     "propylon_document_manager.file_versions",
+    
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

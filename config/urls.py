@@ -12,7 +12,6 @@ from propylon_document_manager.file_versions.api.views import PathForFiles
 # API URLS
 urlpatterns = [
     # API base url
-     path("", include("config.api_router")),
     path("api/", include("config.api_router")),
     # DRF auth token
     path("api-auth/", include("rest_framework.urls")),
@@ -23,7 +22,7 @@ urlpatterns = [
         SpectacularSwaggerView.as_view(url_name="api-schema"),
         name="api-docs",
     ),
-    re_path(r'^(?P<path>.*)(?:\?revision=\d+)?$', PathForFiles.as_view(), name="files"),
+    re_path(r'^api/(?P<path>.*)(?:\?revision=\d+)?$', PathForFiles.as_view(), name="files"),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
