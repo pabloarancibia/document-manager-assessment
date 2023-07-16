@@ -61,4 +61,4 @@ To run the tests, check your test coverage, and generate an HTML coverage report
 4. Run test with Collection Runer [Doc](https://learning.postman.com/docs/collections/running-collections/intro-to-collection-runs/)
 
 ### Aditional Documentation
-    See /aditional_documentation/ directory.
+    See /additional_documentation/ directory.

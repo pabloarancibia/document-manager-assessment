@@ -1,15 +1,55 @@
 import React, { useState, useEffect } from "react";
 import api from './interceptor/api';
+import { useNavigate } from 'react-router-dom';
 
 import "./FileVersions.css";
 
 function FileVersionsList(props) {
   const file_versions = props.file_versions;
+  const [hoveredFile, setHoveredFile] = useState(null);
+
+  // Download file
+  const downloadFile = (urlSetted, fileName, version) => {
+    const downloadUrl = `/${urlSetted}/${fileName}${version ? `?revision=${version}` : ''}`;
+    api.get(downloadUrl, { responseType: 'blob' })
+      .then(response => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileName);
+        document.body.appendChild(link);
+        link.click();
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
+  const handleMouseEnter = (file_version) => {
+    setHoveredFile(file_version);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredFile(null);
+  };
+
+
   return file_versions.map((file_version) => (
-    <div className="file-version" key={file_version.id}>
+    <div className="file-version" key={file_version.id} 
+    onClick={() => downloadFile(file_version.url_setted,file_version.file_name, file_version.version_number)}
+    onMouseEnter={() => handleMouseEnter(file_version)}
+    onMouseLeave={handleMouseLeave}
+    style={{
+        backgroundColor: hoveredFile === file_version ? 'lightblue' : 'transparent',
+        cursor: hoveredFile === file_version ? 'pointer' : 'default'
+      }}
+    >
       <h2>File Name: {file_version.file_name}</h2>
       <p>
         ID: {file_version.id} Version: {file_version.version_number}
+      </p>
+      <p>
+        Url: {file_version.url_setted}
       </p>
     </div>
   ));
@@ -22,6 +62,14 @@ function FileVersions() {
   const [files, setFiles] = useState([{}])
   const [status, setstatus] = useState('')
   const [url_setted, setUrlsetted] = useState('')
+
+  const navigate = useNavigate();
+
+  // Logout
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  }
 
   // upload file
   const saveFile = () =>{
@@ -69,8 +117,16 @@ function FileVersions() {
     dataFetch();
   }, []);
   return (
-    
     <div>
+      <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <div className="container-fluid">
+          <span className="navbar-brand mb-0 h1">FileVersions</span>
+          <div className="navbar-nav ml-auto">
+            <button className="btn btn-outline-primary" onClick={handleLogout}>Logout</button>
+          </div>
+        </div>
+      </nav>
+    <div className="container mt-5">
       <h1>Upload Files</h1>
       <div className="row">
       <div className="col-md-4">
@@ -111,6 +167,7 @@ function FileVersions() {
       <div>
         <FileVersionsList file_versions={data} />
         </div>
+    </div>
     </div>
 
   );
