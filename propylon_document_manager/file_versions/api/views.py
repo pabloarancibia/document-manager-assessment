@@ -22,6 +22,9 @@ from .serializers import FileVersionSerializer
 
 import magic
 
+from drf_spectacular.utils import OpenApiResponse,OpenApiParameter, extend_schema, inline_serializer
+
+
 
 class FileVersionViewSet(CreateModelMixin, RetrieveModelMixin, ListModelMixin, GenericViewSet):
     authentication_classes = [TokenAuthentication]
@@ -31,17 +34,58 @@ class FileVersionViewSet(CreateModelMixin, RetrieveModelMixin, ListModelMixin, G
     lookup_field = "id"
     parser_classes = (MultiPartParser,)
 
+    @extend_schema(
+        description='Get list of files.\nOnly shows files owned by the user.\nToken Authentication required on header: "Authorization: Token <token>".',
+        responses={
+            200: FileVersionSerializer(many=True),
+            401: OpenApiResponse(
+                description='Authentication credentials were not provided.',
+                examples={
+                    'application/json': {
+                        'detail': 'Authentication credentials were not provided.'
+                        }
+                    }
+                )
+            }
+        )
     def list(self, request):
-        ''' get list of files of user
-        '''
+        '''Get list of files.\n
+    Only shows files owned by the user.\n
+    Token Authentication required on header: "Authorization: Token \<token\>".
+    '''
         filesVersion = FileVersion.objects.filter(file_user=request.user)
         serializer = self.serializer_class(filesVersion, many=True)
         return Response(serializer.data)
     
+    @extend_schema(
+        request=inline_serializer(
+            name='FileVersionCreate',
+            fields={
+                'url_setted': serializers.CharField(),
+                'url_file': serializers.FileField()
+            }
+        ),
+        responses={
+        200: FileVersionSerializer(),
+        401: OpenApiResponse(
+            description='Authentication credentials were not provided.',
+            examples={
+                'application/json': {
+                    'detail': 'Authentication credentials were not provided.'
+                }
+            }
+        )
+    }
+    )
     def create(self, request):
-        ''' Upload new file, 
-        if exist similar url and file_name, version_number change
+        '''Upload a new file. If the file name and URL already exist 
+        in the database, a version number will be assigned to 
+        the document.\n
+        Parameters:\n
+        'url_setted': str, Url to upload file\n
+        'url_file': file object 
         '''
+        
         serializer = self.serializer_class(data = request.data)
         if serializer.is_valid():
             # user logged
@@ -72,8 +116,35 @@ class PathForFiles(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated, OwnFilePermission]
 
+    @extend_schema(
+        description='Paths for download file.\nExample: docs/test/test.pdf\nExample with version: docs/test/test.pdf?revision=2',
+        responses={
+            200: OpenApiResponse(
+                description='File download',
+                examples={
+                    'application/octet-stream': {
+                        'schema': {
+                            'type': 'string',
+                            'format': 'binary'
+                        }
+                    }
+                }
+            ),
+            401: OpenApiResponse(
+            description='Authentication credentials were not provided.',
+            examples={
+                'application/json': {
+                    'detail': 'Authentication credentials were not provided.'
+                }
+            }
+            ),
+            404: OpenApiResponse(description="File not find."),
+        }
+    )
     def get(self, request, *args, **kwargs):
-        '''paths for files logic
+        '''paths for download file. \n
+        example: docs/test/test.pdf \n
+        example with version: docs/test/test.pdf?revision=2
     '''
         # get path parameter
         path = kwargs.get('path')  

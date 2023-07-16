@@ -48,3 +48,17 @@ To run the tests, check your test coverage, and generate an HTML coverage report
 #### Running tests with pytest
 
     $ pytest
+
+## Updates:
+
+### API Documentation:
+    See http://0.0.0.0:8001/api/docs/ for details of endpoints documentation.
+
+### Postman Collection and Test
+1. [Install Postman](https://www.postman.com/)
+2. Import file document-manager-assessment/backend.postman_collection.json in Postman.
+3. Run request individually
+4. Run test with Collection Runer [Doc](https://learning.postman.com/docs/collections/running-collections/intro-to-collection-runs/)
+
+### Aditional Documentation
+    See /aditional_documentation/ directory.
