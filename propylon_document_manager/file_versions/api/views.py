@@ -171,7 +171,7 @@ class PathForFiles(APIView):
         if fileversion:
             urlfile = fileversion.url_file
         else:
-            return HttpResponse("El archivo no se encontró.", status=404)
+            return HttpResponse("File no found.", status=404)
         
         # complete path of file
         # full_path = settings.MEDIA_ROOT + '/' + urlfile.path

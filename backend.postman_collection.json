@@ -399,6 +399,61 @@
 			"response": []
 		},
 		{
+			"name": "Download File Revision",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify the response status code",
+							"pm.test(\"Valid status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Verify if the response contains a valid content type header for file-related types",
+							"pm.test(\"Valid file-related content type\", function () {",
+							"    const validContentTypes = [",
+							"        \"application/pdf\",",
+							"        \"application/msword\",",
+							"        \"application/vnd.ms-excel\",",
+							"        \"image/jpeg\",",
+							"        \"image/png\",",
+							"        \"text/plain\"",
+							"    ];",
+							"",
+							"    const responseContentType = pm.response.headers.get(\"Content-Type\");",
+							"    pm.expect(validContentTypes).to.include(responseContentType);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/docs/test/test.pdf",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"docs",
+						"test",
+						"test.pdf"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Download File noAuth",
 			"event": [
 				{
