@@ -10,7 +10,7 @@ function FileVersionsList(props) {
 
   // Download file
   const downloadFile = (urlSetted, fileName, version) => {
-    const downloadUrl = `/${urlSetted}/${fileName}${version ? `?revision=${version}` : ''}`;
+    const downloadUrl = `/api/${urlSetted}/${fileName}${version ? `?revision=${version}` : ''}`;
     api.get(downloadUrl, { responseType: 'blob' })
       .then(response => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -91,7 +91,7 @@ function FileVersions() {
       formData.forEach((value, key) => {
         console.log(`${key}: ${value}`);
       });
-      api.post('/file_versions/', formData, axiosConfig).then(
+      api.post('/api/file_versions/', formData, axiosConfig).then(
           response =>{
               console.log(response)
               setstatus('File Uploaded Successfully')
@@ -105,7 +105,7 @@ function FileVersions() {
   // fetch data
   const dataFetch = async () => {
     try {
-      const response = await api.get('/file_versions/');
+      const response = await api.get('/api/file_versions/');
       // set state when the data received
       setData(response.data);
     } catch (error) {

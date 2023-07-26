@@ -167,14 +167,14 @@ class PathForFiles(APIView):
             fileversion = FileVersion.objects.filter(url_setted=urlsetted, file_name=filename).last()
 
 
-        # get file url
+        # Get file url
         if fileversion:
             urlfile = fileversion.url_file
         else:
             return HttpResponse("File no found.", status=404)
         
-        # complete path of file
-        # full_path = settings.MEDIA_ROOT + '/' + urlfile.path
+        # Complete path of file
+        # Full_path = settings.MEDIA_ROOT + '/' + urlfile.path
         full_path = urlfile.path
         
         # open file
