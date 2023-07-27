@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient
+from rest_framework import status
 
 from propylon_document_manager.file_versions.models import FileVersion
 from propylon_document_manager.file_versions.api.serializers import FileVersionSerializer
@@ -87,3 +88,17 @@ def test_path_for_files(authenticated_api_client, file_version_data):
 def test_path_for_files_file_not_found(authenticated_api_client):
     response = authenticated_api_client.get('/api/nonexistent-url/')
     assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_unauthenticated_user_cannot_create_file_version(api_client):
+
+    file_version_data = {
+        'file_name': 'test.txt',
+        'url_setted': 'test-url',
+    }
+
+    response = api_client.post('/api/file-versions/', data=file_version_data, format='multipart')
+
+
+    assert response.status_code in (status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN)
