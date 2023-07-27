@@ -12,6 +12,7 @@ Welcome to Propylon Document Manager's documentation!
 
    howto
    users
+   file_versions
 
 
 
