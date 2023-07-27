@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from file_versions.models import FileVersion
+from propylon_document_manager.file_versions.models import FileVersion
 
 class FileVersionSerializer(serializers.ModelSerializer):
     url_setted = serializers.CharField(max_length=512)

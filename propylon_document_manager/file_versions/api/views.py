@@ -17,7 +17,7 @@ from rest_framework.parsers import MultiPartParser
 from urllib.parse import unquote
 
 
-from file_versions.models import FileVersion
+from propylon_document_manager.file_versions.models import FileVersion
 from .serializers import FileVersionSerializer
 
 import magic

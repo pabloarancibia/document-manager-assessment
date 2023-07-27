@@ -40,7 +40,7 @@ django-debug-toolbar = "==4.1.0"
 django-extensions = "==3.2.3"
 django-coverage-plugin = "==3.0.0"
 pytest-django = "==4.5.2"
-python-magic = "*"
+python-magic = "==0.4.27"
 
 [dev-packages]
 

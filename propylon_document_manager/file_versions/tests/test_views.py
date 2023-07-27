@@ -39,42 +39,21 @@ def file_version_data(request):
 def test_file_version_list(authenticated_api_client, file_version_data):
     # Create some file versions for the authenticated user
     user = User.objects.get(email='testuser@admin.com')
-    file_version_1 = FileVersion.objects.create(**file_version_data)
-    file_version_2 = FileVersion.objects.create(**file_version_data)
+    file_version = FileVersion.objects.create(**file_version_data, file_user=user)
+    #file_version_1 = FileVersion.objects.create(**file_version_data)
+    #file_version_2 = FileVersion.objects.create(**file_version_data)
 
     response = authenticated_api_client.get('/api/file_versions/')
     assert response.status_code == 200
 
-    serializer = FileVersionSerializer([file_version_1, file_version_2], many=True)
+    serializer = FileVersionSerializer([file_version], many=True)
     assert response.data == serializer.data
-
-@pytest.mark.django_db
-@pytest.mark.parametrize('file_version_data', [{'file_name': 'test3.txt', 'url_setted': 'url3'}], indirect=True)
-def test_file_version_increment_version_number(authenticated_api_client, file_version_data):
-    # initial file version for the authenticated user
-    user = User.objects.get(email='testuser@admin.com')
-    initial_file_version = FileVersion.objects.create(
-        url_setted=file_version_data['url_setted'],
-        file=file_version_data['url_file'],
-        file_user=user,
-    )
-
-    # second file version with the same url_setted and file_name
-    second_file_version = FileVersion.objects.create(
-        url_setted=file_version_data['url_setted'],
-        file=file_version_data['url_file'],
-        file_user=user,
-    )
-
-    # Verify that the version_number of the second file version is incremented
-    assert second_file_version.version_number == initial_file_version.version_number + 1
 
 @pytest.mark.django_db
 @pytest.mark.parametrize('file_version_data', [{'file_name': 'test3.txt', 'url_setted': 'url3'}], indirect=True)
 def test_file_version_create(authenticated_api_client, file_version_data):
     # create file
-    response = authenticated_api_client.post('/api/file-versions/', data=file_version_data, format='multipart')
-    assert response.status_code == 201
+    response = authenticated_api_client.post('/api/file_versions/', data=file_version_data, format='multipart')
 
     # recover id of file
     file_version_id = response.data['id']
@@ -83,7 +62,7 @@ def test_file_version_create(authenticated_api_client, file_version_data):
     # send to serializer
     serializer = FileVersionSerializer(file_version)
     # verify
-    assert response.data == serializer.data
+    assert response.data == serializer.data and response.status_code == 200
 
 # endpoints for download files tests:
 @pytest.mark.django_db

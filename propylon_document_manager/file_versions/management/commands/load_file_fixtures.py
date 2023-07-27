@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from file_versions.models import FileVersion
+from propylon_document_manager.file_versions.models import FileVersion
 
 file_versions = [
     'bill_document',
